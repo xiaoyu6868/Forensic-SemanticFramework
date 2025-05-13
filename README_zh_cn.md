@@ -9,7 +9,7 @@ LanguageBind用于深度伪造检测
 适配方法：在预训练模型上添加分类头进行微调
 优化策略：冻结预训练模型参数，只训练分类层
 
-![](images\architecture.png)
+![](images/architecture.png)
 
 文件结构
 ```
