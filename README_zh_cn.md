@@ -9,13 +9,17 @@ LanguageBind用于深度伪造检测
 适配方法：在预训练模型上添加分类头进行微调
 优化策略：冻结预训练模型参数，只训练分类层
 
+![](images\architecture.png)
+
 文件结构
+```
 ├── train_ClassifierHead.py    # 训练脚本
 ├── test_ClassifierHead.py     # 测试脚本
 └── deepfake/                  # 核心模块
     ├── __init__.py
     ├── deepfake_classifier.py # 分类器模型定义
     └── deepfake_dataset.py    # 数据集加载类
+```
 
 核心功能
 多类别数据支持：同时处理多个类别的深度伪造数据（如car, cat, chair, horse等）
