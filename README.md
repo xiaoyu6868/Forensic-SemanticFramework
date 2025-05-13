@@ -10,7 +10,7 @@ This project utilizes the LanguageBind multimodal model for deepfake image detec
 - Adaptation Method: Adding a classification head on the pre-trained model for fine-tuning
 - Optimization Strategy: Freezing pre-trained model parameters, training only the classification layer
 
-![](images\architecture.png)
+![](images/architecture.png)
 
 ## File Structure
 ```
