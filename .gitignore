@@ -1,0 +1,14 @@
+checkpoint/pytorch_model.bin
+logs
+*.pth
+__init__.py
+
+*.log
+*.csv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+*.pywz
