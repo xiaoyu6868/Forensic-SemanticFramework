@@ -86,7 +86,7 @@ def train_joint(model, train_loader, criterion, optimizer, device, epoch, args):
 
         # Use fusion loss for joint training phase
         # loss = fusion_loss
-        loss = fusion_loss + 0.5 * lora_loss + 0.5 * npr_loss +  0.0001 * l2_reg
+        loss = fusion_loss 
         loss.backward()
         optimizer.step()
         
@@ -101,12 +101,8 @@ def train_joint(model, train_loader, criterion, optimizer, device, epoch, args):
         
         # Display training info
         if i % args.print_freq == 0:
-            lora_lr = optimizer.param_groups[0]['lr']
-            npr_lr = optimizer.param_groups[1]['lr']
             fusion_lr = optimizer.param_groups[2]['lr']
-            logging.info(f"Epoch {epoch+1}, Step {i}, Loss: {current_loss}, "
-                         f"LoRA Loss: {lora_loss.item()}, NPR Loss: {npr_loss.item()}, fusion_loss: {fusion_loss.item()}, l2_reg : {0.0001 * l2_reg},"
-                         f"LoRA lr: {lora_lr}, NPR lr: {npr_lr}, fusion lr: {fusion_lr}")
+    
     
     return train_loss, train_preds, train_labels
 
