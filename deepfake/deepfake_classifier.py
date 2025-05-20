@@ -153,27 +153,22 @@ class DeepfakeClassifier(nn.Module):
         """Model forward pass, enhanced with NPR features"""
         # 1. Calculate NPR difference features - pixel domain NPR calculation
         interpolated = self.interpolate(pixel_values, factor=0.5)
-        npr_features = (pixel_values - interpolated) * 2.0/3.0  # NPR features
+        npr_features = (pixel_values - interpolated)
         
-        pixel_freq = fft.rfft2(pixel_values)                    # Convert to frequency domain
-        interpolated_freq = fft.rfft2(interpolated)   # Convert downsampled-then-upsampled image to frequency domain
-        freq_diff = (pixel_freq - interpolated_freq) * 2.0/3.0 # Calculate frequency domain difference
-        orig_h, orig_w = pixel_values.shape[2], pixel_values.shape[3]
-        fft_features = (fft.irfft2(freq_diff, s=(orig_h, orig_w))) * 2.0/3.0 # Convert frequency domain difference back to spatial domain
-        combined_npr = torch.abs(npr_features * 0.5 + fft_features * 0.5)  # Combine pixel and frequency domain NPR
+        pixel_freq = fft.rfft2(pixel_values)                  
+        interpolated_freq = fft.rfft2(interpolated)  
+        freq_diff = (pixel_freq - interpolated_freq)
+        combined_npr = torch.abs(npr_features + freq_diff ) 
         
         # Extract NPR features
         npr_features_resnet = self.npr_resnet(combined_npr) # [batch_size, 128]
         
         # 2. Original image path - use pretrained vision model to extract features
-        orig_features = self.model.vision_model(pixel_values)['pooler_output']
+        orig_features = self.model.vision_model(pixel_values)
         orig_features = self.fc2(orig_features)
 
-        # fused_features = orig_features + npr_features_resnet
-        # Improved feature fusion: concatenate then linear projection
-        concatenated = torch.cat([orig_features, npr_features_resnet], dim=1)  # Concatenate features
-        fused_features = self.fusion_layer(concatenated)  # Linear projection back to 128-dim
-
+        fused_features = orig_features + npr_features_resnet
+        
         # 3. Separate predictions - for monitoring individual contributions
         npr_logits = self.fc1(npr_features_resnet)
         lora_logits = self.fc1(orig_features)
